@@ -39,7 +39,6 @@ class HashMap
   end
 
   def get(key)
-    # debugger
     hash_key = key.hash % num_buckets
     @store[hash_key].get(key)
   end
@@ -70,9 +69,5 @@ class HashMap
       new_store.set(key, val)
     end
     @store = new_store.store
-  end
-
-  def bucket(key)
-    # optional but useful; return the bucket corresponding to `key`
   end
 end
