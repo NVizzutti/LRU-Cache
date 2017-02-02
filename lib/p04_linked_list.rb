@@ -16,8 +16,6 @@ class Link
   def remove
     @prev.next = @next
     @next.prev = @prev
-    # optional but useful, connects previous link to next link
-    # and removes self from list.
   end
 end
 
@@ -84,9 +82,7 @@ class LinkedList
 
   def remove(key)
     current = @head
-    # debugger
     until current == @tail
-      # debugger
       if current.key == key
         current.remove
         return current
@@ -105,7 +101,6 @@ class LinkedList
     end
   end
 
-  # uncomment when you have `each` working and `Enumerable` included
   def to_s
      inject([]) { |acc, link| acc << "[#{link.key}, #{link.val}]" }.join(", ")
   end

@@ -19,8 +19,6 @@ class String
 end
 
 class Hash
-  # This returns 0 because rspec will break if it returns nil
-  # Make sure to implement an actual Hash#hash method
   def hash
     result = 0
     self.each do |key , val|
