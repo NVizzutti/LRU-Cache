@@ -8,7 +8,7 @@ This implementation uses custom hashing functions for Strings, Arrays, and Hash 
 
 ### Linked-List
 
-The linked list holds a `nil` value for the head node, as well as the tail node. This keeps consistency and makes for cleaner code when keeping track of moving pointers. Ruby's `Enumerable` module was added to allow for extra functionality. As lookup time is linear `O(n)`, the hash map is needed to optimize the cache. 
+The linked list holds a `nil` value for the head node, as well as the tail node. This avoids having to re-assign `head` or `tail` and allows easy access to first and last nodes. Still, as lookup time is linear `O(n)`, the hash map is needed to optimize the cache.
 
 ### Putting it Together
 
