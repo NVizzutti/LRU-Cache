@@ -4,7 +4,44 @@ In this exercise I implemented an LRU Cache that utilizes a a custom-built `Hash
 
 ### Hash Map
 
-This implementation uses custom hashing functions for Strings, Arrays, and Hash Objects to create unique keys as references in the hash map. The hashed values are stored as pointers the objects in the doubly-linked-list. The buckets in the hash map are considered full when the average number of objects per bucket is greater than 1, at which point the number of buckets doubles and keys are reassigned so that values are distributed evenly and resizing is kept to a minimum. Based on the application of the hash map, alternative criteria for resizing may be optimal.
+This implementation uses custom-built hashing functions for Strings, Arrays, and Hash Objects to create unique keys as references in the hash map. The hashed values are stored as pointers the objects in the doubly-linked-list. The buckets in the hash map are considered full when the average number of objects per bucket is greater than 1, at which point the number of buckets doubles and keys are reassigned so that values are distributed evenly and resizing is kept to a minimum. Based on the application of the hash map, alternative criteria for resizing may be optimal.
+
+```Ruby
+  def get(key)
+    hash_key = key.hash % num_buckets
+    @store[hash_key].get(key)
+  end
+
+  def set(key, val)
+    hash_key = key.hash % num_buckets
+    if @store[hash_key].include?(key)
+      @store[hash_key].update(key, val)
+    else
+      @store[hash_key].append(key, val)
+      @count += 1
+    end
+    resize! if @count > num_buckets
+  end
+
+  alias_method :[], :get
+  alias_method :[]=, :set
+
+  private
+
+  def num_buckets
+    @store.length
+  end
+
+  def resize!
+    new_store = HashMap.new(num_buckets * 2)
+    self.each do |key, val|
+      new_store.set(key, val)
+    end
+    @store = new_store.store
+  end
+end
+```
+
 
 ### Linked-List
 
@@ -87,7 +124,7 @@ class LinkedList
 
 ### Putting it Together
 
-The hash map is great for lookup, insertion, and deletion, all in constant time. The linked list is great for keeping order, and allowing for easy re-arrangement. The LRU cache keeps a `@store` instance of the `HashMap` class, and an `@map` instance of the `LinkedList` class. In the end we get a clean LRU cache with excellent time complexity for all major actions.
+The hash map is great for lookup, insertion, and deletion, all in constant time. The linked list is great for keeping order, and allowing for easy re-arrangement. The LRU cache keeps a `@store` instance of the `HashMap` class, and an `@map` instance of the `LinkedList` class. In the end we get a clean LRU cache with excellent time complexity for all major actions, with the occasional resize being triggered. 
 
 ```Ruby 
 class LRUCache
