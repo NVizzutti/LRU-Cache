@@ -10,6 +10,81 @@ This implementation uses custom hashing functions for Strings, Arrays, and Hash 
 
 The linked list holds a `nil` value for the head node, as well as the tail node. This avoids having to re-assign `head` or `tail` and allows easy access to first and last nodes. Still, as lookup time is linear `O(n)`, the hash map is needed to optimize the cache.
 
+```Ruby
+class LinkedList
+  include Enumerable
+  def initialize
+    @head = Link.new
+    @tail = Link.new
+    @head.next = @tail
+    @tail.prev = @head
+  end
+
+  def [](i)
+    each_with_index { |link, j| return link if i == j }
+    nil
+  end
+
+  def first
+    @head.next
+  end
+
+  def last
+    @tail.prev
+  end
+
+  def empty?
+    return true if @head.next == @tail
+    return false
+  end
+
+  def get(key)
+    current = @head
+    until current == @tail
+      return current.val if key == current.key
+      current = current.next
+    end
+    nil
+  end
+
+  def include?(key)
+    ! get(key).nil?
+  end
+
+  def append(key, val)
+    new_link = Link.new(key, val)
+    new_link.next = @tail
+    new_link.prev = @tail.prev
+    temp = @tail.prev
+    @tail.prev = new_link
+    temp.next = new_link
+    new_link
+  end
+
+  def update(key, val)
+    current = @head
+    until current == @tail
+      if key == current.key
+        current.val = val
+        break
+      end
+      current = current.next
+    end
+  end
+
+  def remove(key)
+    current = @head
+    until current == @tail
+      if current.key == key
+        current.remove
+        return current
+      end
+      current = current.next
+    end
+
+  end
+  ```
+
 ### Putting it Together
 
 The hash map is great for lookup, insertion, and deletion, all in constant time. The linked list is great for keeping order, and allowing for easy re-arrangement. The LRU cache keeps a `@store` instance of the `HashMap` class, and an `@map` instance of the `LinkedList` class. In the end we get a clean LRU cache with excellent time complexity for all major actions.
