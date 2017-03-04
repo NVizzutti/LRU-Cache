@@ -13,3 +13,50 @@ The linked list holds a `nil` value for the head node, as well as the tail node.
 ### Putting it Together
 
 The hash map is great for lookup, insertion, and deletion, all in constant time. The linked list is great for keeping order, and allowing for easy re-arrangement. The LRU cache keeps a `@store` instance of the `HashMap` class, and an `@map` instance of the `LinkedList` class. In the end we get a clean LRU cache with excellent time complexity for all major actions.
+
+```Ruby 
+class LRUCache
+  attr_reader :count
+  def initialize(max, prc)
+    @map = HashMap.new
+    @store = LinkedList.new
+    @max = max
+    @prc = prc
+  end
+
+  def count
+    @map.count
+  end
+
+  def get(key)
+    if @map.get(key).nil?
+      new_val = @prc.call(key)
+      new_link = @store.append(key, new_val)
+      @map.set(key, new_link)
+      eject! if count > @max
+      new_val
+    else
+      link = @store.remove(key)
+      update_link!(link)
+      @map.get(key)
+    end
+  end
+
+  def to_s
+    "Map: " + @map.to_s + "\n" + "Store: " + @store.to_s
+  end
+
+  private
+
+  def update_link!(link)
+    new_link = @store.append(link.key, link.val)
+    @map.set(new_link.key, new_link)
+  end
+
+  def eject!
+    link = @store.remove(@store.first.key)
+    @map.delete(link.key)
+  end
+end
+```
+
